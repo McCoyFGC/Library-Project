@@ -2,7 +2,7 @@
 import sqlite3
 from LibraryOOP import Library, Book
 
-conn = sqlite3.connect('library.db')
+conn = sqlite3.connect('library.db') # Creates a db file if it doesn't exist
 library = Library(conn)# This will allow me to use the library functions from the LibraryOOP.py file
 
 #TODO IN PROGRESS: Make functions that can add books, remove books, and modify books (such as updating your progress)
@@ -20,7 +20,7 @@ conn.commit()
 
 # a while loop that lets you navigate the 'library' #
 while True:
-    user_choice = input("Input 'A' to add a book, 'D' to display books, or 'E' to exit:")
+    user_choice = input("Input 'A' to add a book, 'R' to remove a book, 'D' to display books, or 'E' to exit:")
     if user_choice == 'A':
         bookName = input("Enter a book name:")
         bookAuthor = input("Enter a book author:")
@@ -41,6 +41,11 @@ while True:
         except sqlite3.IntegrityError:
             print("This book exists already")
 
+    elif user_choice == 'R':
+        Library.display_books(library)
+        bookID = input("Enter a book ID of which you'd like to remove: ")
+        Library.remove_book(library, int(bookID))
+
     elif user_choice == 'D':
         print("These are the books currently in the library")
         Library.display_books(library)
@@ -51,17 +56,6 @@ while True:
     else:
         print("Invalid input")
 
-
-# This just defines a book and allows you to use it to add to the table
-
-sampleBook = Book("Sample title", "Sample author", "Sample description", 200)
-
-sampleBook2 = Book("Another Sample Title", "Another Sample Author", "Another Sample Description", 99)
-
-try:
-    library.add_book(sampleBook2)
-except sqlite3.IntegrityError:
-    print("This book exists already")
 
 
 

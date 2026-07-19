@@ -29,5 +29,7 @@ class Library:
             print()
 
     #TODO 1) Make a function to be able to remove books
-
+    def remove_book(self, id):
+        self.conn.execute('''DELETE FROM library WHERE id=?''', (id,))
+        self.conn.commit()
     #TODO 2) Make a function that allows you to modify books

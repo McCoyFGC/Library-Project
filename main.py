@@ -5,8 +5,6 @@ from LibraryOOP import Library, Book
 conn = sqlite3.connect('library.db') # Creates a db file if it doesn't exist
 library = Library(conn)# This will allow me to use the library functions from the LibraryOOP.py file
 
-#TODO IN PROGRESS: Make functions that can add books, remove books, and modify books (such as updating your progress)
-
 # Makes a table that has columns for: title, author, description, pages
 # TODO LATER add another row that allows you to show the progress on the books, learning the optional function
 conn.execute('''CREATE TABLE IF NOT EXISTS library (
@@ -18,9 +16,8 @@ conn.execute('''CREATE TABLE IF NOT EXISTS library (
 
 conn.commit()
 
-# a while loop that lets you navigate the 'library' #
 while True:
-    user_choice = input("Input 'A' to add a book, 'R' to remove a book, 'D' to display books, or 'E' to exit:")
+    user_choice = input("Input 'A' to add a book, 'R' to remove a book, 'M' to modify a book, 'D' to display books, or 'E' to exit:")
     if user_choice == 'A':
         bookName = input("Enter a book name:")
         bookAuthor = input("Enter a book author:")
@@ -45,6 +42,21 @@ while True:
         Library.display_books(library)
         bookID = input("Enter a book ID of which you'd like to remove: ")
         Library.remove_book(library, int(bookID))
+
+    elif user_choice == 'M':
+        Library.display_books(library)
+        bookID = input("Enter a book ID of which you'd like to modify: ")
+        # By using "or None" at the end it puts the input as None so it can properly register the line of code in LibraryOOP.py
+        # Where it says if BLANK is not None else existing[BLANK]
+        new_title = input("Enter a book title: ") or None
+        new_author = input("Enter a book author: ") or None
+        new_description = input("Enter a book description: ") or None
+
+        #This is the only layout I can use that lets me use 'else/or' None and doesn't come back an error#
+        pages_input = input("Enter a book pages:")
+        new_pages = int(pages_input) if pages_input else None
+
+        Library.update_book(library, bookID, new_title, new_author, new_description, new_pages)
 
     elif user_choice == 'D':
         print("These are the books currently in the library")

@@ -28,8 +28,26 @@ class Library:
             print(f"ID: {row[0]}\n Title: {row[1]}\n Author: {row[2]}\n Description: {row[3]}\n Pages: {row[4]}")
             print()
 
-    #TODO 1) Make a function to be able to remove books
+    #TODO OPTIONAL: Update the function to fix the incrementing of the id's
     def remove_book(self, id):
         self.conn.execute('''DELETE FROM library WHERE id=?''', (id,))
         self.conn.commit()
-    #TODO 2) Make a function that allows you to modify books
+
+    def update_book(self, id, title = None, author = None, description = None, pages = None):
+        cursor = self.conn.execute('''SELECT title, author, description, pages FROM library WHERE id=?''', (id,))
+        existing = cursor.fetchone()
+
+        if existing is None:
+            print("No book found with that ID")
+            return
+
+        new_title = title if title is not None else existing[0]
+        new_author = author if author is not None else existing[1]
+        new_description = description if description is not None else existing[2]
+        new_pages = pages if pages is not None else existing[3]
+
+        self.conn.execute("""
+        UPDATE library SET title = ?, author = ?, description = ?, pages = ? WHERE id = ?""",
+                          (new_title, new_author, new_description, new_pages, id))
+        # ALWAYS REMEMBER TO TUPLE IN THE SECOND PARAMETER OF THESE ^^^
+        self.conn.commit()
